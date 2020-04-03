@@ -1,0 +1,4 @@
+﻿{
+    "connectionString": "mongodb://localhost/farmz2u",
+    "secret": "f2u2020"
+}

@@ -1,0 +1,7 @@
+create *
+getAll *
+getById *
+getByOptionId -- req.query.id
+getByOptionIdResultType  -- req.query.optionId, req.query.resultType
+_update *
+delete *
