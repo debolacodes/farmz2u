@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
   optionText: { type: String, required: true },
   questionId: { type: String, required: true },
-  imageUrl: { type: String },
+  imageUrl: { type: String, default: "" },
   isActive: { type: Boolean, default: true },
   nextQuestion: { type: String, default: "" },
   optionScore: { type: String },

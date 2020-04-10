@@ -6,15 +6,15 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
   valueChain: { type: String, required: true },
-  farmingType: { type: String, required: true },
+  farmingType: { type: String },
   timeRequirement: { type: String },
   region: { type: String },
   avgYield: { type: String },
-  incomeEstimate: { type: String },
+  incomeEstimate: { type: String, required: true, default: 0 },
   incomeReference: { type: String },
   option: { type: JSON, default: [] },
   optionId: { type: String },
-  createdDate: { type: Date, default: Date.now }
+  createdDate: { type: Date, default: Date.now },
 });
 
 schema.set("toJSON", { virtuals: true });

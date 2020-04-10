@@ -13,23 +13,30 @@ function jwt() {
     path: [
       "/users/authenticate",
       "/questions/start",
-      { url: "/users/curious", methods: ["POST"] },
-      { url: "/users", methods: ["POST"] },
+      { url: /\/users*/, methods: ["POST"] },
       { url: "/information/", methods: ["POST"] },
       { url: /\/information*/, methods: ["GET"] },
       { url: /\/loanrequests*/, methods: ["POST"] },
-      { url: /\/users*/, methods: ["PUT"] }
-    ]
+      { url: /\/users*/, methods: ["PUT"] },
+    ],
   });
 }
 
 async function isRevoked(req, payload, next) {
   var apiPath = req.path;
-  console.log(apiPath);
   var method = req.method;
-  const user = await userService.getById(payload.sub);
+  let token = req.headers.authorization.replace("Bearer ", "");
+
+  const user = await userService.getByToken(payload.sub, token);
+  var tokenExpired = true;
+  if (Number(Date.now()) - Number(payload.date_created) > 86400000) {
+    tokenExpired = false;
+  }
+
   if (user) {
-    if (payload.admin) {
+    if (tokenExpired === false) {
+      next(new Error("Token Expired."));
+    } else if (payload.admin) {
       next();
     } else if (payload.curious) {
       if (

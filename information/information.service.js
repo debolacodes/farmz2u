@@ -15,11 +15,15 @@ module.exports = {
   getAll,
   getbyId,
   getByUserId,
-  _delete
+  _delete,
 };
-async function _create(body) {
-  const ft = new db.Information(body);
+async function _create(query) {
+  const ft = new Information({ valueChain: query.valueChain });
   await ft.save();
+
+  var newValueChain = await Information.find(query).sort({ _id: 1 }).limit(1);
+  console.log(newValueChain);
+  return newValueChain[0];
 }
 
 async function _delete(id) {
@@ -43,7 +47,7 @@ async function getByUserId(id) {
       let allAnswersWithQuestion = await Answers.find({
         userId: id,
         questionId: allQuestions[k]._id,
-        isActive: true
+        isActive: true,
       });
       let foundMatch = false;
       if (allAnswersWithQuestion.hasOwnProperty(0)) {

@@ -1,4 +1,4 @@
 ﻿{
-    "connectionString": "mongodb://localhost/farmz2u",
-    "secret": "f2u2020"
+  "connectionString": "mongodb://farmz2u:AishaAdmin2020@161.35.3.28:27017/farmz2u?authSource=admin",
+  "secret": "f2u2020"
 }

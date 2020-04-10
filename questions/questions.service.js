@@ -15,7 +15,7 @@ module.exports = {
   _update,
   delete: _delete,
   getCurrent,
-  start
+  start,
 };
 
 async function getAll() {
@@ -27,7 +27,7 @@ async function getAll() {
   for (var i = 0; i < allQuestion.length; i++) {
     options = await Options.find({
       questionId: allQuestion[i]._id,
-      isActive: true
+      isActive: true,
     });
     questionJson = { question: allQuestion[i], options: options };
     allQuestionAndOptions[i] = questionJson;
@@ -101,13 +101,14 @@ async function getById(id) {
 }
 
 async function create(QuestionParam) {
-  const question = new Questions(QuestionParam);
+  questionText = decodeURI(QuestionParam.questionText);
+  const question = new Questions({ questionText: questionText });
   await question.save();
-}
-
-async function create(QuestionParam) {
-  const question = new Questions(QuestionParam);
-  await question.save();
+  var newQuestion = await Questions.find({ questionText: questionText })
+    .sort({ _id: 1 })
+    .limit(1);
+  var questionWithOptions = await getById(newQuestion[0]._id);
+  return questionWithOptions;
 }
 
 async function _update(id, QuestionParam) {

@@ -20,60 +20,60 @@ function _update(req, res, next) {
   userService
     ._update(req.params.id, req.query)
     .then(() => res.json({}))
-    .catch(err => next(err));
+    .catch((err) => next(err));
 }
 
 function authenticate(req, res, next) {
   userService
     .authenticate(req)
-    .then(user =>
+    .then((user) =>
       user
         ? res.json(user)
         : res.status(400).json({ message: "Username or password is incorrect" })
     )
-    .catch(err => next(err));
+    .catch((err) => next(err));
 }
 
 function register(req, res, next) {
   userService
     .create(req.body)
     .then(() => res.json({}))
-    .catch(err => next(err));
+    .catch((err) => next(err));
 }
 
 function registerAdmin(req, res, next) {
   console.log(req);
   userService
     .createAdmin(req.body)
-    .then(users => res.json(users))
-    .catch(err => next(err));
+    .then((users) => res.json(users))
+    .catch((err) => next(err));
 }
 
 function getAll(req, res, next) {
   userService
     .getAll()
-    .then(users => res.json(users))
-    .catch(err => next(err));
+    .then((users) => res.json(users))
+    .catch((err) => next(err));
 }
 
 function getById(req, res, next) {
   userService
     .getById(req.params.id)
-    .then(user => (user ? res.json(user) : res.sendStatus(404)))
-    .catch(err => next(err));
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
 }
 
 function _delete(req, res, next) {
   userService
     .delete(req.params.id)
     .then(() => res.json({}))
-    .catch(err => next(err));
+    .catch((err) => next(err));
 }
 
 function createCurious(req, res, next) {
   // console.log("Ade");
   userService
     .createCurious()
-    .then(user => (user ? res.json(user) : res.sendStatus(404)))
-    .catch(err => next(err));
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
 }

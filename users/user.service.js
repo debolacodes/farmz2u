@@ -16,11 +16,15 @@ module.exports = {
   createAdmin,
   createCurious,
   _update,
-  delete: _delete
+  delete: _delete,
+  getByToken,
 };
 
-async function authenticate({ username, password }) {
+async function authenticate(req) {
+  username = req.body.username;
+  password = req.body.password;
   const user = await User.findOne({ username });
+
   // console.log(user);
   if (user && bcrypt.compareSync(password, user.hash)) {
     const { hash, ...userWithoutHash } = user.toObject();
@@ -29,13 +33,20 @@ async function authenticate({ username, password }) {
         sub: user.id,
         admin: user.admin,
         curious: user.curiousUser,
-        general: user.generalUser
+        general: user.generalUser,
+        date_created: Date.now(),
       },
       config.secret
     );
+
+    Object.assign(user, { token: token });
+    await user.save();
+    let SuccessMessage = { mesage: "Success" };
+
     return {
       ...userWithoutHash,
-      token
+      token,
+      message: "Success",
     };
   }
 }
@@ -46,6 +57,10 @@ async function getAll() {
 
 async function getById(id) {
   return await User.findById(id).select("-hash");
+}
+
+async function getByToken(id, usertoken) {
+  return await User.findById({ _id: id, token: usertoken });
 }
 
 async function create(userParam) {
@@ -79,7 +94,7 @@ async function createCurious() {
   var newUser = {
     username: username,
     hash: curiousHash,
-    curiousUser: true
+    curiousUser: true,
   };
   const cuser = new User(newUser);
   await cuser.save();
@@ -90,15 +105,18 @@ async function createCurious() {
       sub: user.id,
       admin: user.admin,
       curious: user.curiousUser,
-      general: user.generalUser
+      general: user.generalUser,
+      date_created: Date.now(),
     },
     config.secret
   );
+
   Object.assign(user, { token: token });
+  await user.save();
 
   return {
     user,
-    token
+    token,
   };
 }
 
@@ -167,7 +185,6 @@ async function _update(id, userParam) {
   }
 
   console.log(userParam);
-  // copy userParam properties to user
   Object.assign(user, userParam);
 
   await user.save();

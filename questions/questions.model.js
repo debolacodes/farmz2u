@@ -8,6 +8,7 @@ const schema = new Schema({
   questionText: { type: String, required: true },
   imageUrl: { type: String },
   head: { type: Boolean, default: false },
+  type: { type: String, default: 0 },
   nextQuestion: { type: String, default: "" },
   isActive: { type: Boolean, default: true },
   createdDate: { type: Date, default: Date.now }

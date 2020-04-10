@@ -10,7 +10,7 @@ module.exports = {
   getByQId,
   create,
   _update,
-  delete: _delete
+  delete: _delete,
 };
 
 async function getAll() {
@@ -28,22 +28,10 @@ async function getByQId(qid) {
 
 async function create(OptionsParam) {
   const options = new Options(OptionsParam);
-  // save Options
-  var res = {};
   await options.save();
-  var r = Options.find(OptionsParam)
-    .sort({ _id: 1 })
-    .limit(1);
-  console.log(r);
-  var m = r;
+  var r = Options.find(OptionsParam).sort({ _id: 1 }).limit(1);
   return r;
 }
-
-// async function create(OptionsParam) {
-//   const options = new Options(OptionsParam);
-//   // save Options
-//   await options.save();
-// }
 
 async function _update(id, OptionsParam) {
   const options = await Options.findById(id);
