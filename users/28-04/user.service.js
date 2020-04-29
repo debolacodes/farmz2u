@@ -20,7 +20,6 @@ module.exports = {
   getByToken,
   getAllDeleted,
   _restore,
-  _deleteTotally,
 };
 
 async function authenticate(req) {
@@ -55,12 +54,11 @@ async function authenticate(req) {
 }
 
 async function getAll() {
-  let s = await User.find().select("-hash");
-  return s;
+  return await User.find({ isActive: true }).select("-hash");
 }
 
 async function getAllDeleted() {
-  return await User.find().select("-hash");
+  return await User.find({ isActive: false }).select("-hash");
 }
 
 async function getById(id) {
@@ -175,7 +173,6 @@ async function createAdmin(userParam) {
 async function _update(id, userParam) {
   const user = await User.findById(id);
   // validate
-  console.log("here");
   if (!user) throw "User not found";
   if (userParam.username !== undefined) {
     if (
@@ -192,12 +189,9 @@ async function _update(id, userParam) {
       userParam.hash = bcrypt.hashSync(userParam.password, 10);
     }
   }
-  console.log(userParam);
-  console.log("here2");
   Object.assign(user, userParam);
 
   await user.save();
-  return user;
 }
 
 async function _delete(id) {
@@ -210,9 +204,4 @@ async function _restore(id) {
   const user = await User.findById(id);
   Object.assign(user, { isActive: true });
   await user.save();
-}
-
-async function _deleteTotally(id) {
-  const user = User.remove(id);
-  return { message: "deleted" };
 }

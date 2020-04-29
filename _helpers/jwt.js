@@ -6,6 +6,7 @@ const userService = require("../users/user.service");
 const path = require("path");
 
 module.exports = jwt;
+console.log("here");
 
 function jwt() {
   const secret = config.secret;

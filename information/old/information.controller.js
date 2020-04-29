@@ -7,7 +7,7 @@ router.put("/:id", _update);
 router.get("/", getAll);
 router.get("/:id", getById);
 router.get("/user/:id", getByUserId);
-router.delete("/", _delete);
+router.delete("/:id", _delete);
 
 module.exports = router;
 
@@ -48,7 +48,7 @@ function _update(req, res, next) {
 
 function _delete(req, res, next) {
   informationService
-    ._delete(req.query.id)
+    .delete(req.params.id)
     .then(() => res.json({}))
     .catch((err) => next(err));
 }

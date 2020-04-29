@@ -17,6 +17,7 @@ const schema = new Schema({
     match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
   },
   token: "",
+  isActive: { type: Boolean },
   phone: { type: String },
   createdDate: { type: Date, default: Date.now },
 });

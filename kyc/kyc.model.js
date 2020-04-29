@@ -11,7 +11,7 @@ const schema = new Schema({
   passportUrl: { type: String },
   idUrl: { type: String },
   isActive: { type: Boolean, default: true },
-  createdDate: { type: Date, default: Date.now }
+  createdDate: { type: Date, default: Date.now },
 });
 
 schema.set("toJSON", { virtuals: true });

@@ -9,14 +9,13 @@ module.exports = {
   update,
   delete: _delete,
   getAll,
-  getbyId
+  getbyId,
 };
 
 async function create(Param) {
   if (await Kyc.findOne({ userid: Param.userid, isActive: true })) {
     throw "KYC of User exists";
   }
-
   const ft = new Kyc(Param);
   await ft.save();
 }
@@ -36,9 +35,7 @@ async function getbyId(id) {
 }
 async function update(id, Param) {
   const kyc = await Kyc.findById(id);
-
   if (!kyc) throw "kyc not found!";
-
   // copy farmingTypeParam properties to user
   Object.assign(kyc, Param);
   await kyc.save();

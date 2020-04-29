@@ -12,14 +12,11 @@ router.post("/curious", createCurious);
 router.post("/sendcuriousmail", sendcuriousmail);
 router.put("/:id", _update);
 router.get("/:id", getById);
-
+router.get("/all/", getAllDeleted);
 router.get("/", getAll);
-router.get("/getdeleted/", getAll);
-
 router.post("/admin", register);
 router.delete("/restore/:id", _restore);
 router.delete("/:id", _delete);
-router.delete("/shred/:id", deleteTotally);
 
 module.exports = router;
 function sendcuriousmail(req, res, next) {
@@ -28,10 +25,13 @@ function sendcuriousmail(req, res, next) {
     .then((result) => res.json(result))
     .catch((err) => next(err));
 }
+function getAllDeleted(req, res, next) {
+  console.log("assasadre");
+}
 function _update(req, res, next) {
   userService
-    ._update(req.params.id, req.query)
-    .then((result) => res.json(result))
+    ._update(req.params.id, req.body)
+    .then(() => res.json({}))
     .catch((err) => next(err));
 }
 
@@ -62,17 +62,15 @@ function registerAdmin(req, res, next) {
 }
 
 function getAll(req, res, next) {
-  let v = decodeURI(req.query.usertype);
-
-  if (v === "active") {
-    console.log(v);
+  var usertype = req.query.usertype;
+  if (usertype == "all") {
     userService
-      .getAll()
+      .getAllDeleted()
       .then((users) => res.json(users))
       .catch((err) => next(err));
   } else {
     userService
-      .getAllDeleted()
+      .getAll()
       .then((users) => res.json(users))
       .catch((err) => next(err));
   }
@@ -89,13 +87,6 @@ function _delete(req, res, next) {
   userService
     .delete(req.params.id)
     .then(() => res.json({}))
-    .catch((err) => next(err));
-}
-
-function deleteTotally(req, res, next) {
-  userService
-    ._deleteTotally(req.params.id)
-    .then((users) => res.json(users))
     .catch((err) => next(err));
 }
 function _restore(req, res, next) {

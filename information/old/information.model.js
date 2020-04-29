@@ -12,9 +12,8 @@ const schema = new Schema({
   avgYield: { type: String },
   incomeEstimate: { type: String, required: true, default: 0 },
   incomeReference: { type: String },
-  option: { type: String, default: "" },
-  option2: { type: String, default: "" },
-  isActive: { type: String, default: "true" },
+  option: { type: JSON, default: [] },
+  optionId: { type: String },
   createdDate: { type: Date, default: Date.now },
 });
 

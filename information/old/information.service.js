@@ -20,19 +20,20 @@ module.exports = {
 async function _create(query) {
   const ft = new Information({ valueChain: query.valueChain });
   await ft.save();
+
   var newValueChain = await Information.find(query).sort({ _id: 1 }).limit(1);
+  console.log(newValueChain);
   return newValueChain[0];
 }
 
 async function _delete(id) {
-  console.log(id);
-  return _update(id, { isActive: "false" });
+  const information = await db.Information.findById(id);
+  Object.assign(information, { isActive: false });
+  await information.save();
 }
 
 async function getAll() {
-  return await db.Information.find({ isActive: { $ne: "false" } }).select(
-    "-createdDate"
-  );
+  return await db.Information.find().select("-createdDate");
 }
 
 async function getByUserId(id) {
@@ -75,10 +76,7 @@ async function getByUserId(id) {
       valueChainToReturn.push(allValueChains[i]);
     }
   }
-
-  if (valueChainToReturn == "") {
-    valueChainToReturn = "none";
-  }
+  console.log(valueChainToReturn);
   return valueChainToReturn;
 }
 
@@ -86,10 +84,12 @@ async function getbyId(id) {
   return await db.Information.findById(id);
 }
 
-async function _update(id, infobody) {
-  const information = await db.Information.updateOne({ _id: id }, infobody);
+async function _update(id, Param) {
+  const information = await db.Information.findById(id);
+
   if (!information) throw "Requirements not found!";
-  Object.assign(information, infobody);
+
+  // copy farmingTypeParam properties to user
+  Object.assign(information, Param);
   await information.save();
-  console.log("here");
 }

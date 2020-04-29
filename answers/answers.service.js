@@ -2,11 +2,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const db = require("_helpers/db");
+const nodemailer = require("nodemailer");
 const User = db.User;
 const Answers = db.Answers;
-const SkillsResults = db.SkillsResults;
 const Options = db.Options;
-const Skills = db.Skills;
+const Questions = db.Questions;
 
 module.exports = {
   submitAnswer,
@@ -15,8 +15,42 @@ module.exports = {
   getByUser,
   _update,
   quser,
-  _delete
+  _delete,
+  sendCuriousmail,
 };
+
+async function sendCuriousmail(body) {
+  let email = body.email;
+
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "debolacodes@gmail.com",
+      pass: "Olumuyiwa4",
+    },
+  });
+
+  var mailOptions = {
+    from: "info@farmz2u.co.uk",
+    to: "debolacodes@gmail.com",
+    subject: "Curious Need",
+    text:
+      `Hi There, <br/> 
+    My curiosity isn’t satisfied just yet. Can you tell me why?
+    From
+    Curious Person(` +
+      email +
+      ")",
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      return { message: "Error submitting Query" };
+    } else {
+      return { message: "Query sent" };
+    }
+  });
+}
 
 async function getAll() {
   return await Answers.find({ isActive: true });
@@ -30,8 +64,21 @@ async function getById(id) {
   return await Answers.findById(id);
 }
 async function getByUser(uid) {
-  console.log(uid);
-  return await Answers.find({ userId: uid, isActive: true });
+  let an = await Answers.find({ userId: uid, isActive: true });
+  let qid = "";
+  let oid = "";
+  let result = Array();
+  var all_answers = {};
+  for (var i = 0; i < an.length; i++) {
+    qid = an[i].questionId;
+    oid = an[i].selectedOption;
+    let qtext = await Questions.findById(qid);
+    let otext = await Options.findById(oid);
+    result.push([qtext.questionText, otext.optionText]);
+    all_answers[i] = an[i];
+  }
+  console.log(result);
+  return result;
 }
 
 async function _update(id, answerParam) {
@@ -50,27 +97,21 @@ async function submitAnswer(req) {
   var _userId = req.body.userId;
   var optionId = req.body.selectedOption;
   var qid = req.body.questionId;
-  // console.log(req.body);
   let option = await Options.findById(optionId);
-  // console.log(option);
   if (Object.entries(option).length === 0) {
   } else {
     const ans = await Answers.find({ questionId: qid, userId: _userId });
     if (Object.entries(ans).length === 0) {
-      console.log("here");
       const answer = new Answers({
         userId: _userId,
         selectedOption: optionId,
-        questionId: qid
+        questionId: qid,
       });
       await answer.save();
     } else {
-      //Update Answer
-      // console.log("Answer Exist");
       if (optionId != ans[0].selectedOption) {
         const answer = await Answers.findById(ans[0].id);
         Object.assign(answer, { selectedOption: optionId });
-        console.log(answer);
         await answer.save();
       }
     }

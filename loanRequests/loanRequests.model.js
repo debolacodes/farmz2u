@@ -8,10 +8,12 @@ const schema = new Schema({
   userId: { type: String, required: true },
   amount: { type: String },
   status: { type: String },
-  description: { type: String },
+  description: { type: String, default: "" },
+  bvn: { type: String, default: "" },
+  selectedvc: { type: String, default: "" },
   isActive: { type: Boolean, default: true },
   dateModified: { type: Date },
-  createdDate: { type: Date, default: Date.now }
+  createdDate: { type: Date, default: Date.now },
 });
 
 schema.set("toJSON", { virtuals: true });
